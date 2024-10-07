@@ -10,7 +10,7 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// MySQL připojení
+// MySQL
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root', // Změňte podle vaší konfigurace
@@ -27,14 +27,11 @@ db.connect((err) => {
     console.log('Připojeno k databázi MySQL');
 });
 
-// Základní routa
+
 app.get('/', (req, res) => {
     return res.json("From backend Side");
 });
 
-/* ROUTES */
-
-// 1. Získat všechny třídy
 app.get('/classes', (req, res) => {
     const sql = 'SELECT * FROM classes';
     db.query(sql, (err, results) => {
@@ -47,7 +44,7 @@ app.get('/classes', (req, res) => {
     });
 });
 
-// 2. Získat všechny studenty v konkrétní třídě
+
 app.get('/classes/:classId/students', (req, res) => {
     const classId = req.params.classId;
     const sql = 'SELECT * FROM students WHERE class_id = ?';
@@ -61,7 +58,6 @@ app.get('/classes/:classId/students', (req, res) => {
     });
 });
 
-// 3. Přidat nového studenta do třídy
 app.post('/classes/:classId/students', (req, res) => {
     const classId = req.params.classId;
     const { name } = req.body;
@@ -76,7 +72,7 @@ app.post('/classes/:classId/students', (req, res) => {
     });
 });
 
-// 4. Přidat známku studentovi
+
 app.post('/students/:studentId/grades', (req, res) => {
     const studentId = req.params.studentId;
     const { grade, weight, description } = req.body;
@@ -91,7 +87,6 @@ app.post('/students/:studentId/grades', (req, res) => {
     });
 });
 
-// 5. Získat průměr studenta
 app.get('/students/:studentId/average', (req, res) => {
     const studentId = req.params.studentId;
     const sql = 'SELECT SUM(grade * weight) / SUM(weight) AS average FROM grades WHERE student_id = ?';
@@ -105,7 +100,6 @@ app.get('/students/:studentId/average', (req, res) => {
     });
 });
 
-// 6. Smazat známku
 app.delete('/grades/:gradeId', (req, res) => {
     const gradeId = req.params.gradeId;
     const sql = 'DELETE FROM grades WHERE id = ?';
@@ -119,7 +113,6 @@ app.delete('/grades/:gradeId', (req, res) => {
     });
 });
 
-// 7. Smazat studenta
 app.delete('/students/:studentId', (req, res) => {
     const studentId = req.params.studentId;
     const sql = 'DELETE FROM students WHERE id = ?';
